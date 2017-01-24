@@ -144,7 +144,7 @@ describe('Shopping List', function() {
 });
 
 //===============RECIPES TEST=======================//
-describe('recipes', function() {
+describe('Recipes', function() {
 
   before(function() {
     return runServer();
@@ -158,7 +158,7 @@ describe('recipes', function() {
   //   1. make request to `/recipes`
   //   2. inspect response object and prove has right code and have
   //   right keys in response object.
-  it('should list items on GET', function() {
+  it('should list recipes on GET', function() {
 
     return chai.request(app)
       .get('/recipes')
@@ -214,7 +214,7 @@ describe('recipes', function() {
     // we can make a second, PUT call to the app.
     const updateData = {
       name: 'foo',
-      ingredients: 'bar'
+      ingredients: ['bar', 'bizz']
     };
 
     return chai.request(app)
@@ -235,9 +235,11 @@ describe('recipes', function() {
       // and returns updated item
       .then(function(res) {
         res.should.have.status(200);
-        res.should.be.json;
         res.body.should.be.a('object');
-        res.body.should.deep.equal(updateData);
+        res.body.should.include.keys('name', 'ingredients', 'id');
+        res.body.name.should.equal(updateData.name);
+        res.body.id.should.equal(updateData.id);
+        res.body.ingredients.should.include.members(updateData.ingredients);
       });
   });
 
